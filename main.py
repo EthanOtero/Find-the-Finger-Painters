@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import commands, tasks
 import base64
 from easy_pil import *
 from PIL import Image, ImageDraw, ImageFont
@@ -10,16 +10,13 @@ dotenv_path = r"resources/secrets.env" # replace with path to .env file containi
 load_dotenv(dotenv_path=dotenv_path)
 TOKEN = getenv('TOKEN')
 
-intents = nextcord.Intents.default()
-intents.members = True
-intents.message_content = True
-intents.presences = True
-intents.voice_states = True
+intents = nextcord.Intents.all()
 
 bot = commands.Bot(intents=intents, command_prefix='fp$')
 ownID = [373266820792188928, 1178550088436563973, 1226410848533217310,1217689235268702232]
 permitted_promo = []
 
+SERVER_GUILD_ID = 1483249575086260244
 CREATOR_UPDATES_ROLE_ID = 1484378677365178429
 CREATOR_UPDATES_CHANNEL_ID = 1484378170156257402
 FINGER_PAINTER_ROLE_ID = 1483258332952137758
@@ -28,6 +25,9 @@ WELCOME_CHANNEL_ID = 1484390149830869042
 ADMIN_CHANNEL_ID = 1483281945440813117
 COMMUNITY_ROLE_ID = 1483261055474995362
 PROMOTION_FORUM_ID = 1486382662708101222
+MEMBER_COUNT_VC_ID = 1498541531890581607
+
+
 bannable_words = [base64.b64decode(i).decode('utf-8') for i in ["bmlja2E=", "bmlja2Vy", "bmlnYQ==", "bmlnZ2E=", "bmlnZ2Vy", "ZmFnZ290", "ZmFn", "bmdh"]]
 swear_words = ["fuck","bitch","shit","cunt","dick","pussy","tit","whore"]
 
@@ -138,5 +138,22 @@ async def on_member_join(member):
 
     community_role = member.guild.get_role(COMMUNITY_ROLE_ID)
     await member.add_roles(community_role)
+
+async def update_channel_name(channel, name):
+    await channel.edit(name=name)
+    return
+
+@tasks.loop(seconds = 15) # repeat after every 15 seconds
+async def auto_update_member_count():
+    print("updating member vc...")
+    await bot.wait_until_ready()
+    guild = bot.get_guild(SERVER_GUILD_ID)
+    member_count_vc = guild.get_channel(MEMBER_COUNT_VC_ID)
+    member_count = guild.member_count
+    new_name = f"MEMBER COUNT: {member_count}"
+    await update_channel_name(member_count_vc, new_name)
+
+
+auto_update_member_count.start()
 
 bot.run(TOKEN)
