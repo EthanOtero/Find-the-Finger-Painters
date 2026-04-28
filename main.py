@@ -68,6 +68,8 @@ async def on_message(message):
     text = message.content
     for i in bannable_words:
         if i in text.lower():
+            if "ingame" in text.lower():
+                return
             try:
                 await message.author.send(f"Your message (`{text}`) contained the word `{i}`. You cannot say that word in this server. Doing so again will result in a ban.")
             except:
