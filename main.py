@@ -143,7 +143,7 @@ async def update_channel_name(channel, name):
     await channel.edit(name=name)
     return
 
-@tasks.loop(seconds = 15) # repeat after every 15 seconds
+@tasks.loop(seconds = 60) # repeat after every 60 seconds
 async def auto_update_member_count():
     print("updating member vc...")
     await bot.wait_until_ready()
@@ -151,7 +151,11 @@ async def auto_update_member_count():
     member_count_vc = guild.get_channel(MEMBER_COUNT_VC_ID)
     member_count = guild.member_count
     new_name = f"MEMBER COUNT: {member_count}"
-    await update_channel_name(member_count_vc, new_name)
+    print("yuh")
+    if member_count_vc.name != new_name:
+        print("buhhh")
+        await update_channel_name(member_count_vc, new_name)
+    return
 
 
 auto_update_member_count.start()
