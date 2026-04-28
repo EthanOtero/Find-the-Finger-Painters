@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
 from os import getenv
 
-dotenv_path = r"resources\secrets.env" # replace with path to .env file containing token
+dotenv_path = r"resources/secrets.env" # replace with path to .env file containing token
 load_dotenv(dotenv_path=dotenv_path)
 TOKEN = getenv('TOKEN')
 
