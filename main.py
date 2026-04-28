@@ -120,14 +120,14 @@ async def on_member_join(member):
     try:
         profile_picture = await load_image_async(str(member.avatar.url))
     except:
-        with Image.open(r"resources\images\defaultpfp.png") as pfp:
+        with Image.open(r"resources/images/defaultpfp.png") as pfp:
             profile_picture = Editor(pfp)
     profile = Editor(profile_picture).resize((187, 187))
     background.paste(profile, (507, 70))    
-    with Image.open(r"resources\images\fpjointemplate.png") as fpjoinpic:
+    with Image.open(r"resources/images/fpjointemplate.png") as fpjoinpic:
             fpjoin = Editor(fpjoinpic).resize((1200,500))
     background.paste(fpjoin, (0,0))
-    poor_family_font = ImageFont.truetype(r"resources\fonts\PoorStory-Regular.ttf", 50)
+    poor_family_font = ImageFont.truetype(r"resources/fonts/PoorStory-Regular.ttf", 50)
     background.text((1200/2, 280), f"@{member.name}", font=poor_family_font, align="center")
     background.text((1200/2, 335), f"You are user: #{member.guild.member_count}", font=poor_family_font, align="center")
     background.text((1200/2, 390), f"Welcome to Find The Finger Painters!", font=poor_family_font, align="center")
