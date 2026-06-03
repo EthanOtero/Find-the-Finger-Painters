@@ -30,6 +30,7 @@ MEMBER_COUNT_VC_ID = 1498541531890581607
 
 bannable_words = [base64.b64decode(i).decode('utf-8') for i in ["bmlja2E=", "bmlja2Vy", "bmlnYQ==", "bmlnZ2E=", "bmlnZ2Vy", "ZmFnZ290", "ZmFn", "bmdh"]]
 swear_words = ["fuck","bitch","shit","cunt","dick","pussy","tit","whore"]
+excused_words = ["ingame", "minigame", "fangame"]
 
 @bot.event
 async def on_ready():
@@ -68,8 +69,16 @@ async def on_message(message):
     text = message.content
     for i in bannable_words:
         if i in text.lower():
-            if "ingame" in text.lower():
+
+            excused = False
+
+            for g in excused_words:
+                if g in text.lower():
+                    excused = True
+
+            if excused:
                 return
+            
             try:
                 await message.author.send(f"Your message (`{text}`) contained the word `{i}`. You cannot say that word in this server. Doing so again will result in a ban.")
             except:
@@ -78,8 +87,17 @@ async def on_message(message):
             await admin_channel.send(f"<@{message.author.id}> was warned for the message: ```{text}``` due to containing the word `{i}`.")
             await message.delete()
             return
+        
     for i in swear_words:
         if i in text.lower():
+            excused = False
+
+            for g in excused_words:
+                if g in text.lower():
+                    excused = True
+
+            if excused:
+                return
             try:
                 await message.author.send(f"Your message (`{text}`) contained the word `{i}`. This server is family friendly; please try to keep things clean!")
             except:
@@ -143,18 +161,19 @@ async def update_channel_name(channel, name):
     await channel.edit(name=name)
     return
 
-@tasks.loop(seconds = 60) # repeat after every 60 seconds
+@tasks.loop(seconds = 120) # repeat after every 120 seconds
 async def auto_update_member_count():
-    print("updating member vc...")
+    print("Running member count VC check.")
     await bot.wait_until_ready()
     guild = bot.get_guild(SERVER_GUILD_ID)
     member_count_vc = guild.get_channel(MEMBER_COUNT_VC_ID)
     member_count = guild.member_count
     new_name = f"MEMBER COUNT: {member_count}"
-    print("yuh")
+    print("Member VC name created. Verifying that names match...")
     if member_count_vc.name != new_name:
-        print("buhhh")
+        print("Names do not match. Updating...")
         await update_channel_name(member_count_vc, new_name)
+    print("Member count VC is up-to-date.")
     return
 
 
