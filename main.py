@@ -30,7 +30,7 @@ MEMBER_COUNT_VC_ID = 1498541531890581607
 
 bannable_words = [base64.b64decode(i).decode('utf-8') for i in ["bmlja2E=", "bmlja2Vy", "bmlnYQ==", "bmlnZ2E=", "bmlnZ2Vy", "ZmFnZ290", "ZmFn", "bmdh"]]
 swear_words = ["fuck","bitch","shit","cunt","dick","pussy","tit","whore"]
-excused_words = ["ingame", "minigame", "fangame"]
+excused_words = ["ingame", "minigame", "fangame", "competitive"]
 
 @bot.event
 async def on_ready():
